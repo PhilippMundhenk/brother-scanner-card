@@ -7,7 +7,7 @@ A dashboard card for the [Brother Scanner (Docker)](https://github.com/PhilippMu
 
 The card shows the scanner (a picture, the name and the state with the same icons as the container's web UI), the scan buttons with the labels configured in the container, a highlighted button while a scan waits for its rear pages (with the countdown), the OCR queue, the last scan with download buttons for the PDF and its OCR copy, and a link to the web UI.
 
-<!-- screenshot: doc/card.png -->
+![The card in a Home Assistant dashboard](doc/card.png)
 
 ## Installation
 
@@ -58,6 +58,7 @@ Prepared; the remaining steps need the repository owner:
 npm install
 npm run build        # dist/brother-scanner-card.js
 npm test             # builds, then Playwright tests against a harness with a fake hass object
+node test/ha-screenshot.mjs <ha url> <user> <password> <ha config dir> doc/card.png   # card screenshot from a real Home Assistant
 ```
 
 ## License
