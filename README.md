@@ -1,0 +1,65 @@
+# Brother Scanner Card
+
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![Build](https://github.com/PhilippMundhenk/brother-scanner-card/actions/workflows/build.yml/badge.svg)](https://github.com/PhilippMundhenk/brother-scanner-card/actions/workflows/build.yml)
+
+A dashboard card for the [Brother Scanner (Docker)](https://github.com/PhilippMundhenk/ha-brother-scanner) Home Assistant integration, which drives a [BrotherScannerDocker](https://github.com/PhilippMundhenk/BrotherScannerDocker) container.
+
+The card shows the scanner (a picture, the name and the state with the same icons as the container's web UI), the scan buttons with the labels configured in the container, a highlighted button while a scan waits for its rear pages (with the countdown), the OCR queue, the last scan with download buttons for the PDF and its OCR copy, and a link to the web UI.
+
+<!-- screenshot: doc/card.png -->
+
+## Installation
+
+### HACS (custom repository, until the card is in the default store)
+
+1. HACS → Frontend → menu (three dots) → **Custom repositories**
+2. Repository `https://github.com/PhilippMundhenk/brother-scanner-card`, category **Dashboard** (called *Lovelace* or *Plugin* in older HACS versions), Add
+3. Search for "Brother Scanner Card", Download. HACS registers the resource; reload the browser.
+
+### Manual
+
+Copy `dist/brother-scanner-card.js` to `config/www/brother-scanner-card.js` and add a dashboard resource `/local/brother-scanner-card.js` of type *JavaScript module* (Settings → Dashboards → menu → Resources).
+
+## Configuration
+
+The visual editor (Edit dashboard → Add card → Brother Scanner Card) covers every option. In YAML:
+
+```yaml
+type: custom:brother-scanner-card
+entity: sensor.office_scanner_state   # the integration's "State" sensor
+name: Office scanner                  # optional, default: the device name
+show_image: true                      # picture from the integration (generic by model, or the configured URL)
+image: /local/my-scanner.png          # optional, overrides the picture
+show_buttons: true
+buttons: [file, ocr]                  # optional: only these actions (file, ocr, email, image)
+show_selects: false                   # resolution / mode / source dropdowns
+show_last_scan: true
+show_link: true                       # link to the container's web UI
+compact: false
+```
+
+The card finds the other entities of the scanner (buttons, selects, last scan) through the device of the state sensor, so only the state sensor needs to be configured. Disabled actions (`DISABLE_GUI_*` in the container) do not get a button; renamed actions (`RENAME_GUI_*`) show their label.
+
+Downloads go through Home Assistant's authenticated download endpoint of the integration (the card asks for a signed URL first), so they work from outside the local network as well and the container's API token never reaches the browser.
+
+## Publishing to the HACS default store
+
+Prepared; the remaining steps need the repository owner:
+
+1. Publish a release `vX.Y.Z` (the Build workflow attaches `brother-scanner-card.js` to the release; HACS downloads it from there). Keep `version` in `package.json` and the `CARD_VERSION` constant in sync with the tag.
+2. The Build workflow must be green.
+3. Open a pull request against [hacs/default](https://github.com/hacs/default) adding `PhilippMundhenk/brother-scanner-card` to the `plugin` file. The HACS bot checks: description, topics (`home-assistant`, `hacs`, `lovelace`, `brother`, `scanner`), a release with the JS asset, `hacs.json` with `filename`, and the README.
+4. Until that is merged, users add the repository as a custom repository as described above.
+
+## Development
+
+```sh
+npm install
+npm run build        # dist/brother-scanner-card.js
+npm test             # builds, then Playwright tests against a harness with a fake hass object
+```
+
+## License
+
+MIT
