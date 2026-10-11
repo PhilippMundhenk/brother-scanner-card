@@ -5,6 +5,8 @@
 
 A dashboard card for the [Brother Scanner (Docker)](https://github.com/PhilippMundhenk/ha-brother-scanner) Home Assistant integration, which drives a [BrotherScannerDocker](https://github.com/PhilippMundhenk/BrotherScannerDocker) container.
 
+This is an independent, third-party project, not affiliated with or endorsed by Brother Industries, Ltd.; Brother is a trademark of Brother Industries, Ltd. and is used only to describe which devices the container works with. The card contains no Brother logo or artwork; the device picture is a generic drawing provided by the integration.
+
 The card shows the scanner (a picture, the name and the state with the same icons as the container's web UI), the scan buttons with the labels configured in the container, a highlighted button while a scan waits for its rear pages (with the countdown), the OCR queue, the last scan with download buttons for the PDF and its OCR copy, and a link to the web UI.
 
 ![The card in a Home Assistant dashboard](doc/card.png)
