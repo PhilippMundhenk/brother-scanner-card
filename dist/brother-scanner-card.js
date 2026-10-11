@@ -62,8 +62,9 @@ function t(t,e,s,i){var n,o=arguments.length,r=o<3?e:null===i?i=Object.getOwnPro
           <div class="file-name" title=${e.state}>${e.state}</div>
           <div class="file-meta">${this.formatSize(s.size)}${s.modified?` · ${this.formatTime(s.modified)}`:""}</div>
         </div>
-        ${s.download_url?q`<button class="icon" title="Download" @click=${()=>this.download(s.download_url)}><ha-icon icon="mdi:download"></ha-icon></button>`:V}
-        ${s.ocr_download_url?q`<button class="icon" title="Download OCR copy" @click=${()=>this.download(s.ocr_download_url)}><ha-icon icon="mdi:text-recognition"></ha-icon></button>`:V}
+        ${s.download_url?q`<button class="icon" title=${s.is_ocr_copy?"Download (OCR copy)":"Download"} @click=${()=>this.download(s.download_url)}>
+              <ha-icon icon=${s.is_ocr_copy?"mdi:text-recognition":"mdi:download"}></ha-icon></button>`:V}
+        ${s.ocr_download_url&&s.ocr_download_url!==s.download_url?q`<button class="icon" title="Download OCR copy" @click=${()=>this.download(s.ocr_download_url)}><ha-icon icon="mdi:text-recognition"></ha-icon></button>`:V}
       </div>
     `}async press(t,e){this.busy=e,this.error=null;try{await this.hass.callService("button","press",{entity_id:t})}catch(t){this.error=t?.message||String(t)}finally{window.setTimeout(()=>this.busy=null,1500)}}async select(t,e){this.error=null;try{await this.hass.callService("select","select_option",{entity_id:t,option:e})}catch(t){this.error=t?.message||String(t)}}async download(t){this.error=null;try{const e=await this.hass.callWS({type:"auth/sign_path",path:t,expires:60}),s=this.hass.hassUrl?this.hass.hassUrl(e.path):e.path;window.open(s,"_blank","noopener")}catch(t){this.error=`Download failed: ${t?.message||t}`}}formatSize(t){return t||0===t?t<1024?`${t} B`:t<1048576?`${(t/1024).toFixed(0)} kB`:`${(t/1024/1024).toFixed(1)} MB`:""}formatTime(t){const e=new Date(t);if(Number.isNaN(e.getTime()))return"";const s=this.hass.locale?.language||this.hass.language||void 0;return e.toLocaleString(s,{dateStyle:"medium",timeStyle:"short"})}}$t.styles=r`
     ha-card {

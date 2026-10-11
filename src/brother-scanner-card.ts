@@ -224,9 +224,10 @@ export class BrotherScannerCard extends LitElement {
           <div class="file-meta">${this.formatSize(attrs.size)}${attrs.modified ? ` · ${this.formatTime(attrs.modified)}` : ''}</div>
         </div>
         ${attrs.download_url
-          ? html`<button class="icon" title="Download" @click=${() => this.download(attrs.download_url)}><ha-icon icon="mdi:download"></ha-icon></button>`
+          ? html`<button class="icon" title=${attrs.is_ocr_copy ? 'Download (OCR copy)' : 'Download'} @click=${() => this.download(attrs.download_url)}>
+              <ha-icon icon=${attrs.is_ocr_copy ? 'mdi:text-recognition' : 'mdi:download'}></ha-icon></button>`
           : nothing}
-        ${attrs.ocr_download_url
+        ${attrs.ocr_download_url && attrs.ocr_download_url !== attrs.download_url
           ? html`<button class="icon" title="Download OCR copy" @click=${() => this.download(attrs.ocr_download_url)}><ha-icon icon="mdi:text-recognition"></ha-icon></button>`
           : nothing}
       </div>

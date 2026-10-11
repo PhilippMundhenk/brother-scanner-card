@@ -145,3 +145,21 @@ test('stub config picks the state sensor and the editor emits config-changed', a
   });
   expect(emitted).toEqual({ entity: 'sensor.office_state', compact: true });
 });
+
+test('the OCR copy is a second download button only while it is a second file', async ({ page }) => {
+  const card = await mount(page);
+  await expect(card.locator('.last-scan button.icon')).toHaveCount(2);
+
+  // the original was removed after OCR: the newest file is the OCR copy itself
+  await page.evaluate(() => window.setState('sensor.office_last_scan', '2026-10-10-10-00-00-ocr.pdf', {
+    size: 12345, download_url: '/api/brother_scanner/abc/download/2026-10-10-10-00-00-ocr.pdf', ocr_download_url: null, is_ocr_copy: true,
+  }));
+  await expect(card.locator('.last-scan button.icon')).toHaveCount(1);
+  await expect(card.locator('.last-scan button.icon')).toHaveAttribute('title', 'Download (OCR copy)');
+
+  // an older integration that still reports the same file twice
+  await page.evaluate(() => window.setState('sensor.office_last_scan', '2026-10-10-10-00-00-ocr.pdf', {
+    size: 12345, download_url: '/api/brother_scanner/abc/download/2026-10-10-10-00-00-ocr.pdf', ocr_download_url: '/api/brother_scanner/abc/download/2026-10-10-10-00-00-ocr.pdf',
+  }));
+  await expect(card.locator('.last-scan button.icon')).toHaveCount(1);
+});
