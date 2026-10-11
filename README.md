@@ -15,6 +15,10 @@ The card shows the scanner (a picture, the name and the state with the same icon
 
 ### HACS (custom repository, until the card is in the default store)
 
+[![Open your Home Assistant instance and open this repository inside HACS.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=PhilippMundhenk&repository=brother-scanner-card&category=plugin)
+
+The badge opens the repository in your HACS; by hand:
+
 1. HACS → Frontend → menu (three dots) → **Custom repositories**
 2. Repository `https://github.com/PhilippMundhenk/brother-scanner-card`, category **Dashboard** (called *Lovelace* or *Plugin* in older HACS versions), Add
 3. Search for "Brother Scanner Card", Download. HACS registers the resource; reload the browser.
