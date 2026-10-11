@@ -49,15 +49,6 @@ The card finds the other entities of the scanner (buttons, selects, last scan) t
 
 Downloads go through Home Assistant's authenticated download endpoint of the integration (the card asks for a signed URL first), so they work from outside the local network as well and the container's API token never reaches the browser.
 
-## Publishing to the HACS default store
-
-Prepared; the remaining steps need the repository owner:
-
-1. Publish a release `vX.Y.Z` (the Build workflow attaches `brother-scanner-card.js` to the release; HACS downloads it from there). Keep `version` in `package.json` and the `CARD_VERSION` constant in sync with the tag.
-2. The Build workflow must be green.
-3. Open a pull request against [hacs/default](https://github.com/hacs/default) adding `PhilippMundhenk/brother-scanner-card` to the `plugin` file. The HACS bot checks: description, topics (`home-assistant`, `hacs`, `lovelace`, `brother`, `scanner`), a release with the JS asset, `hacs.json` with `filename`, and the README.
-4. Until that is merged, users add the repository as a custom repository as described above.
-
 ## Development
 
 ```sh
@@ -66,6 +57,8 @@ npm run build        # dist/brother-scanner-card.js
 npm test             # builds, then Playwright tests against a harness with a fake hass object
 node test/ha-screenshot.mjs <ha url> <user> <password> <ha config dir> doc/card.png   # card screenshot from a real Home Assistant
 ```
+
+A release tag `vX.Y.Z` must match `version` in `package.json` and the `CARD_VERSION` constant; the Build workflow checks it and attaches `brother-scanner-card.js` to the release.
 
 ## License
 
