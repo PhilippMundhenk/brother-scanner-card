@@ -5,6 +5,7 @@ on:
   pull_request:
   release:
     types: [published]
+  workflow_dispatch:  # run for an existing release: pick its tag as the ref
   schedule:
     - cron: "0 0 * * *"  # daily, so a change in HACS shows up without a push
   workflow_dispatch:
@@ -30,14 +31,14 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
       - name: Check the version matches the tag
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
         run: |
           tag="${GITHUB_REF_NAME#v}"
           version=$(node -p "require('./package.json').version")
           test "$tag" = "$version" || { echo "package.json version $version does not match tag $tag"; exit 1; }
           grep -q "CARD_VERSION = '$version'" src/brother-scanner-card.ts || { echo "CARD_VERSION in src does not match"; exit 1; }
       - name: Attach the bundle to the release
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: dist/brother-scanner-card.js
