@@ -298,7 +298,7 @@ export class BrotherScannerCard extends LitElement {
       object-fit: contain;
       flex-shrink: 0;
       border-radius: 8px;
-      background: var(--secondary-background-color, #f3f4f6);
+      background: #fff; /* the device drawings are made for a white background */
     }
     .compact .image {
       width: 72px;

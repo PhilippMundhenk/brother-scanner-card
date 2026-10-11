@@ -83,7 +83,7 @@ function t(t,e,s,i){var n,o=arguments.length,r=o<3?e:null===i?i=Object.getOwnPro
       object-fit: contain;
       flex-shrink: 0;
       border-radius: 8px;
-      background: var(--secondary-background-color, #f3f4f6);
+      background: #fff; /* the device drawings are made for a white background */
     }
     .compact .image {
       width: 72px;
