@@ -23,6 +23,8 @@ The badge opens the repository in your HACS; by hand:
 2. Repository `https://github.com/PhilippMundhenk/brother-scanner-card`, category **Dashboard** (called *Lovelace* or *Plugin* in older HACS versions), Add
 3. Search for "Brother Scanner Card", Download. HACS registers the resource; reload the browser.
 
+HACS can only register the resource when dashboard resources are managed in storage mode (the default). With `lovelace: resource_mode: yaml` you add it yourself, and you must change the URL with every update, otherwise the browser keeps the old file: `/local/community/brother-scanner-card/brother-scanner-card.js?v=1.0.1`. Removing `resource_mode: yaml` and the `resources:` list, then redownloading the card in HACS, lets HACS handle it from then on.
+
 ### Manual
 
 Copy `dist/brother-scanner-card.js` to `config/www/brother-scanner-card.js` and add a dashboard resource `/local/brother-scanner-card.js` of type *JavaScript module* (Settings → Dashboards → menu → Resources).
