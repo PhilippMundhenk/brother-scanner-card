@@ -49,6 +49,14 @@ export interface CardConfig {
   show_last_scan?: boolean;
   show_link?: boolean;
   compact?: boolean;
+  // the scanner's own state, read over SNMP by the container (2.2+) and
+  // exposed as attributes of the state sensor; each value can be switched off
+  show_device?: boolean;
+  show_registered?: boolean;
+  show_display?: boolean;
+  show_serial?: boolean;
+  show_firmware?: boolean;
+  show_scan_key?: boolean;
 }
 
 export interface ScannerEntities {

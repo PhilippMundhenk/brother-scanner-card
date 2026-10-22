@@ -31,6 +31,8 @@
             attributes: {
               friendly_name: 'Office State', model: 'MFC-L2700DW', image_url: '/images/mfc.svg',
               web_ui_url: 'http://scanner.local:8080', reachable: true,
+              // the scanner's own state (integration 1.1 with container 2.2+)
+              registered: true, serial: 'E73941F6N621420', firmware: 'Y2309112149', display: 'Scan:   drück', scan_key_enabled: true,
               queue: { pending: 0, in_progress: 0, failed: 0, holding: false },
               actions: [
                 { target: 'file', label: 'Archive', enabled: true },

@@ -33,6 +33,18 @@ export class BrotherScannerCardEditor extends LitElement {
           { name: 'compact', selector: { boolean: {} } },
         ],
       },
+      {
+        type: 'grid',
+        name: '',
+        schema: [
+          { name: 'show_device', selector: { boolean: {} } },
+          { name: 'show_registered', selector: { boolean: {} } },
+          { name: 'show_display', selector: { boolean: {} } },
+          { name: 'show_serial', selector: { boolean: {} } },
+          { name: 'show_firmware', selector: { boolean: {} } },
+          { name: 'show_scan_key', selector: { boolean: {} } },
+        ],
+      },
       { name: 'image', selector: { text: {} } },
       {
         name: 'buttons',
@@ -52,6 +64,12 @@ export class BrotherScannerCardEditor extends LitElement {
     compact: 'Compact',
     image: 'Picture URL (optional, overrides the integration)',
     buttons: 'Buttons to show (empty: all enabled actions)',
+    show_device: "Show the scanner's own state (container 2.2+)",
+    show_registered: 'Registration on the scanner',
+    show_display: 'Panel display line',
+    show_serial: 'Serial number',
+    show_firmware: 'Firmware version',
+    show_scan_key: 'Warn when the scan key is disabled',
   };
 
   protected render() {
@@ -63,6 +81,12 @@ export class BrotherScannerCardEditor extends LitElement {
       show_last_scan: true,
       show_link: true,
       compact: false,
+      show_device: true,
+      show_registered: true,
+      show_display: true,
+      show_serial: false,
+      show_firmware: false,
+      show_scan_key: true,
       ...this.config,
     };
     return html`

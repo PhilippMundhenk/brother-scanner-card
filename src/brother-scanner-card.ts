@@ -4,7 +4,7 @@ import { discoverEntities } from './entities';
 import './brother-scanner-card-editor';
 import type { CardConfig, HassEntityState, HomeAssistant, ScannerAction, ScannerEntities } from './types';
 
-const CARD_VERSION = '1.0.1';
+const CARD_VERSION = '1.1.0';
 
 const STATE_ICONS: Record<string, string> = {
   idle: 'mdi:emoticon-happy-outline',
@@ -63,6 +63,12 @@ export class BrotherScannerCard extends LitElement {
       show_last_scan: true,
       show_link: true,
       compact: false,
+      show_device: true,
+      show_registered: true,
+      show_display: true,
+      show_serial: false,
+      show_firmware: false,
+      show_scan_key: true,
       ...config,
     };
   }
@@ -116,6 +122,7 @@ export class BrotherScannerCard extends LitElement {
             ${this.renderDetail(scannerState, attrs, queue)}
           </div>
         </div>
+        ${this.config.show_device !== false ? this.renderDevice(attrs) : nothing}
         ${this.config.show_buttons !== false ? this.renderButtons(scannerState, attrs, entities) : nothing}
         ${this.config.show_selects ? this.renderSelects(entities) : nothing}
         ${this.config.show_last_scan !== false ? this.renderLastScan(entities) : nothing}
@@ -154,6 +161,36 @@ export class BrotherScannerCard extends LitElement {
       parts.push(html`<span class="chip problem"><ha-icon icon="mdi:lan-disconnect"></ha-icon> device offline</span>`);
     }
     return parts.length ? html`<div class="detail">${parts}</div>` : nothing;
+  }
+
+  /**
+   * What the scanner itself reports (container 2.2+, attributes of the state
+   * sensor): whether it lists the container as a Scan-to-PC destination, the
+   * panel display line, serial, firmware, and a warning when the device has
+   * its scan key switched off. Nothing with an older integration or container.
+   */
+  private renderDevice(attrs: Record<string, any>) {
+    const parts: unknown[] = [];
+    if (this.config.show_registered !== false) {
+      if (attrs.registered === true) {
+        parts.push(html`<span class="chip ok" title="The scanner lists this container as a Scan-to-PC destination"><ha-icon icon="mdi:cloud-check-outline"></ha-icon> Scan-to-PC registered</span>`);
+      } else if (attrs.registered === false) {
+        parts.push(html`<span class="chip problem" title="The scanner does not list this container; its buttons will not reach it"><ha-icon icon="mdi:cloud-off-outline"></ha-icon> not registered on the scanner</span>`);
+      }
+    }
+    if (this.config.show_display !== false && attrs.display) {
+      parts.push(html`<span class="chip display" title="Panel display"><ha-icon icon="mdi:monitor-small"></ha-icon> ${attrs.display}</span>`);
+    }
+    if (this.config.show_serial && attrs.serial) {
+      parts.push(html`<span class="chip" title="Serial number">S/N ${attrs.serial}</span>`);
+    }
+    if (this.config.show_firmware && attrs.firmware) {
+      parts.push(html`<span class="chip" title="Firmware">FW ${attrs.firmware}</span>`);
+    }
+    if (this.config.show_scan_key !== false && attrs.scan_key_enabled === false) {
+      parts.push(html`<span class="chip problem" title="The device has its network Scan-to-PC key switched off"><ha-icon icon="mdi:gesture-tap-button"></ha-icon> scan key disabled on the device</span>`);
+    }
+    return parts.length ? html`<div class="device">${parts}</div>` : nothing;
   }
 
   private renderButtons(scannerState: string, attrs: Record<string, any>, entities: ScannerEntities) {
@@ -367,6 +404,19 @@ export class BrotherScannerCard extends LitElement {
     }
     .chip.timer {
       font-variant-numeric: tabular-nums;
+    }
+    .chip.ok {
+      background: rgba(46, 125, 50, 0.12);
+      color: var(--success-color, #2e7d32);
+    }
+    .chip.display {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      white-space: pre;
+    }
+    .device {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .buttons {
       display: grid;
