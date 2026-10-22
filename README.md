@@ -7,7 +7,7 @@ A dashboard card for the [Brother Scanner (Docker)](https://github.com/PhilippMu
 
 This is an independent, third-party project, not affiliated with or endorsed by Brother Industries, Ltd.; Brother is a trademark of Brother Industries, Ltd. and is used only to describe which devices the container works with. The card contains no Brother logo or artwork; the device picture is a generic drawing provided by the integration.
 
-The card shows the scanner (a picture, the name and the state with the same icons as the container's web UI), the scan buttons with the labels configured in the container, a highlighted button while a scan waits for its rear pages (with the countdown), the OCR queue, the last scan with download buttons for the PDF and its OCR copy, and a link to the web UI.
+The card shows the scanner (a picture, the name and the state with the same icons as the container's web UI), the scan buttons with the labels configured in the container, a highlighted button while a scan waits for its rear pages (with the countdown), the OCR queue, the last scan with download buttons for the PDF and its OCR copy, and a link to the web UI. With container 2.2 or newer it also shows what the scanner itself reports: whether it currently lists the container as a Scan-to-PC destination (so the buttons on the device work), its panel display line, and on request serial number and firmware; every one of these can be switched off.
 
 ![The card in a Home Assistant dashboard](doc/card.png)
 
@@ -45,6 +45,12 @@ show_selects: false                   # resolution / mode / source dropdowns
 show_last_scan: true
 show_link: true                       # link to the container's web UI
 compact: false
+show_device: true                     # the scanner's own state (container 2.2+); each value below can be switched off
+show_registered: true                 #   "Scan-to-PC registered" (the scanner lists the container; red when it does not)
+show_display: true                    #   the scanner's panel display line
+show_serial: false                    #   serial number
+show_firmware: false                  #   firmware version
+show_scan_key: true                   #   warn when the device has its network scan key switched off
 ```
 
 The card finds the other entities of the scanner (buttons, selects, last scan) through the device of the state sensor, so only the state sensor needs to be configured. Disabled actions (`DISABLE_GUI_*` in the container) do not get a button; renamed actions (`RENAME_GUI_*`) show their label.

@@ -163,3 +163,32 @@ test('the OCR copy is a second download button only while it is a second file', 
   }));
   await expect(card.locator('.last-scan button.icon')).toHaveCount(1);
 });
+
+test("the scanner's own state: registration and display chips by default, serial/firmware on request, warnings, and all of it switchable", async ({ page }) => {
+  const card = await mount(page);
+  await expect(card.locator('.device .chip')).toHaveCount(2);
+  await expect(card.locator('.device .chip.ok')).toContainText('Scan-to-PC registered');
+  await expect(card.locator('.device .chip.display')).toContainText('Scan:   drück');
+
+  const full = await mount(page, { type: 'custom:brother-scanner-card', entity: 'sensor.office_state', show_serial: true, show_firmware: true });
+  await expect(full.locator('.device .chip')).toContainText(['registered', 'Scan:', 'S/N E73941F6N621420', 'FW Y2309112149']);
+
+  // the device dropped the registration and has its scan key switched off
+  await page.evaluate(() => window.setState('sensor.office_state', null, { registered: false, scan_key_enabled: false }));
+  await expect(full.locator('.device .chip.problem')).toContainText(['not registered on the scanner', 'scan key disabled on the device']);
+  await expect(full.locator('.device .chip.ok')).toHaveCount(0);
+
+  const some = await mount(page, { type: 'custom:brother-scanner-card', entity: 'sensor.office_state', show_registered: false, show_display: false, show_scan_key: false });
+  await expect(some.locator('.device')).toHaveCount(0);
+  const none = await mount(page, { type: 'custom:brother-scanner-card', entity: 'sensor.office_state', show_device: false, show_serial: true });
+  await expect(none.locator('.device')).toHaveCount(0);
+
+  // an older integration or container: no device state in the attributes, no row
+  await page.evaluate(() => {
+    const hass = window.makeHass();
+    for (const key of ['registered', 'serial', 'firmware', 'display', 'scan_key_enabled']) delete hass.states['sensor.office_state'].attributes[key];
+    window.mountCard({ type: 'custom:brother-scanner-card', entity: 'sensor.office_state' }, hass);
+  });
+  await expect(page.locator('brother-scanner-card .device')).toHaveCount(0);
+  await expect(page.locator('brother-scanner-card .name')).toHaveText('Office');
+});
