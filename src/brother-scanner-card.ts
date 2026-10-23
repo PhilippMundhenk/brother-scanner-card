@@ -4,7 +4,7 @@ import { discoverEntities } from './entities';
 import './brother-scanner-card-editor';
 import type { CardConfig, HassEntityState, HomeAssistant, ScannerAction, ScannerEntities } from './types';
 
-const CARD_VERSION = '1.1.0';
+const CARD_VERSION = '1.1.1';
 
 const STATE_ICONS: Record<string, string> = {
   idle: 'mdi:emoticon-happy-outline',
